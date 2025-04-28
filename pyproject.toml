@@ -1,23 +1,41 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "gasdiff"
-version = "0.1.0"
-description = "Generate Markdown gas diffs from Forge JSON gas reports"
-authors = [{ name="Guilherme Dantas" }]
+authors = [
+  { name="Guilherme Dantas" },
+]
+description = "Generates Markdown reports for Forge gas report diffs"
 readme = "README.md"
-requires-python = ">=3.7"
+dynamic = [
+    "version",
+]
+requires-python = ">=3.8"
 dependencies = []
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: File Formats :: JSON",
+    "Topic :: Text Processing :: General",
+]
+keywords = [
+    "forge",
+    "solidity",
+    "gas report",
+    "diff",
+    "markdown",
+    "table",
 ]
 
 [project.urls]
-Homepage = "https://github.com/guidanoli/gasdiff"
-Issues = "https://github.com/guidanoli/gasdiff/issues"
+"Source Code" = "https://github.com/guidanoli/gasdiff"
+"Bug Tracker" = "https://github.com/guidanoli/gasdiff/issues"
 
-[project.scripts]
-gasdiff = "gasdiff.cli:cli"
+[tool.hatch.version]
+path = "gasdiff/__init__.py"

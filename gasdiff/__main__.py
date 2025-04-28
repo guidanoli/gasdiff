@@ -82,3 +82,6 @@ def cli():
         print("Usage: python -m gasdiff before.json after.json")
         sys.exit(1)
     main(sys.argv[1], sys.argv[2])
+
+if __name__ == '__main__':
+    cli()
