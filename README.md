@@ -10,6 +10,6 @@ We also recommend passing `--fuzz-seed 0` so that fuzzy tests receive the same f
 python -m gasdiff before.json after.json
 ```
 
-## Output Example
+## Example
 
-
+Please consult the `examples` directory.
