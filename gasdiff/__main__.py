@@ -41,7 +41,8 @@ def print_markdown_table(contract_name, deployment_diff, function_diffs):
         before, after, diff, rel_diff = values
         print(f"| Deployment {metric} | {before} | {after} | {format_diff(diff, rel_diff)} |")
 
-    for fn_name, metrics in function_diffs.items():
+    for fn_name in sorted(function_diffs.keys()):
+        metrics = function_diffs[fn_name]
         for metric, values in metrics.items():
             before, after, diff, rel_diff = values
             print(f"| {fn_name} {metric} | {before} | {after} | {format_diff(diff, rel_diff)} |")
