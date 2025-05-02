@@ -1,7 +1,7 @@
 import json
 import sys
 import os
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 def load_json(path):
     with open(path, 'r') as f:
@@ -21,6 +21,14 @@ def format_diff(diff, rel_diff):
     if diff is None:
         return ""
     return f"{diff:+} ({rel_diff:.1f}%)"
+
+def normalize_function_names(functions):
+    name_counts = Counter(fn.split('(')[0] for fn in functions)
+    result = {}
+    for fn in functions:
+        base = fn.split('(')[0]
+        result[fn] = fn if name_counts[base] > 1 else base
+    return result
 
 def print_markdown_table(contract_name, deployment_diff, function_diffs):
     print(f"\n### {contract_name}\n")
@@ -63,7 +71,11 @@ def main(before_path, after_path):
         after_funcs = after_entry.get('functions', {})
         all_functions = set(before_funcs.keys()) | set(after_funcs.keys())
 
+        # normalize function names with disambiguation
+        name_map = normalize_function_names(all_functions)
+
         for fn in all_functions:
+            normalized_name = name_map[fn]
             before_fn = before_funcs.get(fn, {})
             after_fn = after_funcs.get(fn, {})
             for key in ['min', 'mean', 'median', 'max']:
@@ -71,7 +83,7 @@ def main(before_path, after_path):
                 a = after_fn.get(key, 0)
                 diff, rel_diff = compute_diff(a, b)
                 if diff is not None:
-                    function_diffs[fn][key] = (b, a, diff, rel_diff)
+                    function_diffs[normalized_name][key] = (b, a, diff, rel_diff)
 
         if deployment_diff or function_diffs:
             simplified_name = simplify_contract_name(contract)
