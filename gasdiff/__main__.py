@@ -45,8 +45,10 @@ def print_markdown_table(contract_name, deployment_diff, function_diffs):
     for fn_name in sorted(function_diffs.keys()):
         metrics = function_diffs[fn_name]
         for metric, values in metrics.items():
-            before, after, diff, rel_diff = values
-            print(f"| {fn_name} {metric} | {before} | {after} | {format_diff(diff, rel_diff)} |")
+            before, after, diff, rel_diff, calls_before, calls_after = values
+            before_str = f"{before} ({calls_before})" if calls_before is not None else str(before)
+            after_str = f"{after} ({calls_after})" if calls_after is not None else str(after)
+            print(f"| {fn_name} {metric} | {before_str} | {after_str} | {format_diff(diff, rel_diff)} |")
 
 def main(before_path, after_path):
     print(f"# Gas report diff")
@@ -76,19 +78,20 @@ def main(before_path, after_path):
         after_funcs = after_entry.get('functions', {})
         all_functions = set(before_funcs.keys()) | set(after_funcs.keys())
 
-        # normalize function names with disambiguation
         name_map = normalize_function_names(all_functions)
 
         for fn in all_functions:
             normalized_name = name_map[fn]
             before_fn = before_funcs.get(fn, {})
             after_fn = after_funcs.get(fn, {})
+            calls_before = before_fn.get('calls')
+            calls_after = after_fn.get('calls')
             for key in ['min', 'mean', 'median', 'max']:
                 b = before_fn.get(key, 0)
                 a = after_fn.get(key, 0)
                 diff, rel_diff = compute_diff(a, b)
                 if diff is not None:
-                    function_diffs[normalized_name][key] = (b, a, diff, rel_diff)
+                    function_diffs[normalized_name][key] = (b, a, diff, rel_diff, calls_before, calls_after)
 
         if deployment_diff or function_diffs:
             simplified_name = simplify_contract_name(contract)
