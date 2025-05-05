@@ -95,10 +95,9 @@ def main(before_path, after_path):
             print_markdown_table(simplified_name, deployment_diff, function_diffs)
 
 def cli():
-    if len(sys.argv) != 3:
-        print("Usage: python -m gasdiff before.json after.json")
-        sys.exit(1)
-    main(sys.argv[1], sys.argv[2])
+    before_path = sys.argv[1] if len(sys.argv) > 1 else "before.json"
+    after_path = sys.argv[2] if len(sys.argv) > 2 else "after.json"
+    main(before_path, after_path)
 
 if __name__ == '__main__':
     cli()
